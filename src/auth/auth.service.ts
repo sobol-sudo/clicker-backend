@@ -21,7 +21,7 @@ export class AuthService {
   async register(username: string, password: string) {
     const existing = await this.authRepository.findByUsername(username);
     if (existing) {
-      throw new HttpException('Пользователь уже существует', HttpStatus.BAD_REQUEST);
+      throw new HttpException('User with this username already exists', HttpStatus.BAD_REQUEST);
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -36,23 +36,23 @@ export class AuthService {
 
     const access_token = this.jwtService.sign(payload);
 
-    return { message: 'Пользователь успешно создан', access_token: access_token };
+    return { message: 'User successfully registered', access_token: access_token };
   }
 
   async login(username: string, password: string) {
     const user = await this.authRepository.findByUsername(username);
     if (!user) {
-      throw new HttpException('Неверный логин или пароль', HttpStatus.UNAUTHORIZED);
+      throw new HttpException('Username or password is invalid', HttpStatus.UNAUTHORIZED);
     }
 
     const isValid = await bcrypt.compare(password, user.password);
     if (!isValid) {
-      throw new HttpException('Неверный логин или пароль', HttpStatus.UNAUTHORIZED);
+      throw new HttpException('Username or password is invalid', HttpStatus.UNAUTHORIZED);
     }
     const payload = { sub: user._id.toString(), username: user.username };
 
     const access_token = this.jwtService.sign(payload);
 
-    return { message: 'Успешный вход', access_token };
+    return { message: 'Logged in successfully', access_token };
   }
 }
