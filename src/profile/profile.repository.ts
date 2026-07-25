@@ -28,7 +28,7 @@ export class ProfileRepository {
         { $set: { avatarUrl: filePath } }
       );
 
-      // Проверяем, найден ли пользователь
+      // Check whether the user was found
       if (result.matchedCount === 0) {
         return {
           success: false,
@@ -36,7 +36,7 @@ export class ProfileRepository {
         };
       }
 
-      // Проверяем, было ли изменение
+      // Check whether anything actually changed
       if (result.modifiedCount === 0) {
         return {
           success: true,
